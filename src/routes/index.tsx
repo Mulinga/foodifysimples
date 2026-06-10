@@ -1,29 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SiteHeader } from "@/components/SiteHeader";
+import { Hero } from "@/components/Hero";
+import { About } from "@/components/About";
+import { Products } from "@/components/Products";
+import { Impact } from "@/components/Impact";
+import { Contact } from "@/components/Contact";
+import { SiteFooter } from "@/components/SiteFooter";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Foodify Simples — Food Waste Composting Veterans" },
+      { name: "description", content: "Automatic organic food waste composting machines for Kenyan businesses, institutions and homes. Turning food waste into fertile ground." },
+      { property: "og:title", content: "Foodify Simples — Food Waste Composting Veterans" },
+      { property: "og:description", content: "Automatic organic food waste composting solutions across Kenya. Closing the loop from kitchen to soil." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://foodifysimples.com" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Foodify Simples" },
+      { name: "twitter:description", content: "Automatic organic food waste composting solutions for Kenya." },
     ],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      <main>
+        <Hero />
+        <About />
+        <Products />
+        <Impact />
+        <Contact />
+      </main>
+      <SiteFooter />
     </div>
   );
 }
