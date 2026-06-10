@@ -1,9 +1,7 @@
 const contacts = [
-  { name: "General Inquiries", email: "info@foodify.com" },
-  { name: "Projects", email: "projects@foodify.com" },
-  { name: "Charles Mulinga, Director", email: "cmulinga@foodify.com" },
-  { name: "Sagan", email: "sagan@foodify.com" },
-  { name: "Finance", email: "finance@foodify.com" },
+  { name: "Foodify Simples", email: "info@foodifysimples.com" },
+  { name: "Foodify Projects", email: "projects@foodifysimples.com" },
+  { name: "Foodify Finance", email: "finance@foodifysimples.com" },
 ];
 
 export function Contact() {
