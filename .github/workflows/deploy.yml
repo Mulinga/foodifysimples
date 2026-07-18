@@ -8,13 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
 
-      - run: npm ci
-      - run: npm run build
-      - run: npm prune --omit=dev
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+
+      - name: Reinstall production-only dependencies
+        run: |
+          rm -rf node_modules
+          bun install --production --frozen-lockfile
 
       - name: Package build
         run: zip -r deploy.zip .output node_modules package.json
