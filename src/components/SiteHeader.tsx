@@ -1,4 +1,4 @@
-import logo from "@/assets/foodify-logo.asset.json";
+import logo from "@/assets/foodify-logo.jpeg";
 
 const nav = [
   { href: "#about", label: "About" },
@@ -12,7 +12,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="#top" className="flex items-center gap-3">
-          <img src={logo.url} alt="Foodify Simples logo" className="h-10 w-10 rounded-full" />
+          <img src={logo} alt="Foodify Simples logo" className="h-10 w-10 rounded-full" />
           <div className="leading-tight">
             <div className="font-display text-lg font-bold tracking-tight text-secondary">FOODIFY</div>
             <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Simples</div>
