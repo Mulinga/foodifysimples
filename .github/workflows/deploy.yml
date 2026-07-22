@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /foodifysimples/
+          server-dir: /foodifysimples.com/
           exclude: |
             **/*
             !deploy.zip
@@ -39,14 +39,14 @@ jobs:
       - name: Extract on server via cPanel API
         run: |
           curl -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
-            "https://${{ secrets.CPANEL_HOST }}:2083/json-api/cpanel?cpanel_jsonapi_apiversion=2&cpanel_jsonapi_module=Fileman&cpanel_jsonapi_func=fileop&op=extract&sourcefiles=foodifysimples/deploy.zip&destfiles=/foodifysimples&doubledecode=1&overwrite=1"
+            "https://${{ secrets.CPANEL_HOST }}:2083/json-api/cpanel?cpanel_jsonapi_apiversion=2&cpanel_jsonapi_module=Fileman&cpanel_jsonapi_func=fileop&op=extract&sourcefiles=foodifysimples.com/deploy.zip&destfiles=/foodifysimples&doubledecode=1&overwrite=1"
 
       - name: Restart app (Passenger restart signal)
         run: |
           curl -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
-            "https://${{ secrets.CPANEL_HOST }}:2083/execute/Fileman/mkdir?path=foodifysimples&name=tmp" || true
+            "https://${{ secrets.CPANEL_HOST }}:2083/execute/Fileman/mkdir?path=foodifysimples.com&name=tmp" || true
           curl -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
-            --data-urlencode "dir=foodifysimples/tmp" \
+            --data-urlencode "dir=foodifysimples.com/tmp" \
             --data-urlencode "file=restart.txt" \
             --data-urlencode "content=" \
             "https://${{ secrets.CPANEL_HOST }}:2083/execute/Fileman/save_file_content"
