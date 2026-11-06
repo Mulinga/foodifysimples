@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 concurrency:
@@ -35,9 +38,11 @@ jobs:
         run: |
           test -s dist/index.html
           test -s dist/foodify-logo.svg
+          test -s dist/sitemap.xml
           echo "Production files are ready in dist/"
 
       - name: Deploy to Foodify document root
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
