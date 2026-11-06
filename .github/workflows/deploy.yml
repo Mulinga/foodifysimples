@@ -1,56 +1,58 @@
-name: Deploy to Truehost
+name: Deploy Foodify Simples
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+concurrency:
+  group: foodify-production-deploy
+  cancel-in-progress: true
 
-      - uses: actions/setup-node@v4
+jobs:
+  build-and-deploy:
+    name: Build and deploy to Truehost
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build production application
+      - name: Build website
         run: npm run build
 
-      - name: Install production-only dependencies
-        run: npm ci --omit=dev
+      - name: Verify production output
+        run: |
+          test -s dist/index.html
+          test -s dist/foodify-logo.svg
+          test -s dist/sitemap.xml
+          echo "Production files are ready in dist/"
 
-      - name: Package application
-        run: zip -r deploy.zip .output node_modules package.json
-
-      - name: Upload deployment package via FTP
+      - name: Deploy to Foodify document root
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./
-          server-dir: /
+          port: ${{ secrets.FTP_PORT || 21 }}
+          protocol: ftps
+          local-dir: dist/
+          server-dir: ./
           exclude: |
-            **/*
-            !deploy.zip
-
-      - name: Extract application in cPanel
-        run: |
-          curl --fail-with-body -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
-            "https://${{ secrets.CPANEL_HOST }}:2083/json-api/cpanel?cpanel_jsonapi_apiversion=2&cpanel_jsonapi_module=Fileman&cpanel_jsonapi_func=fileop&op=extract&sourcefiles=foodifysimples.com/deploy.zip&destfiles=/foodifysimples.com&doubledecode=1&overwrite=1"
-
-      - name: Restart Node.js application
-        run: |
-          curl --fail-with-body -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
-            "https://${{ secrets.CPANEL_HOST }}:2083/execute/Fileman/mkdir?path=foodifysimples.com&name=tmp" || true
-          curl --fail-with-body -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
-            --data-urlencode "dir=foodifysimples.com/tmp" \
-            --data-urlencode "file=restart.txt" \
-            --data-urlencode "content=" \
-            "https://${{ secrets.CPANEL_HOST }}:2083/execute/Fileman/save_file_content"
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
