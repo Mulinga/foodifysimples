@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-labelledby="title desc">
+  <title id="title">Foodify Simples</title><desc id="desc">Circular compost cycle surrounding a growing leaf.</desc>
+  <defs><linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#91C85A"/><stop offset="1" stop-color="#3E8B55"/></linearGradient></defs>
+  <g transform="translate(8 8)">
+    <circle cx="52" cy="52" r="45" fill="none" stroke="#174C38" stroke-width="7" stroke-linecap="round" stroke-dasharray="226 58" transform="rotate(-42 52 52)"/>
+    <path d="M85 20l-2 18-16-8" fill="none" stroke="#174C38" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M24 73c1-22 18-39 44-42-1 26-15 43-44 42Z" fill="url(#leaf)"/>
+    <path d="M24 73c15-14 27-24 42-34" fill="none" stroke="#F8F5E9" stroke-width="3" stroke-linecap="round"/>
+    <path d="M47 86c8-13 20-18 34-17-5 14-16 23-34 17Z" fill="#D78B52"/>
+  </g>
+  <text x="122" y="61" font-family="Arial, Helvetica, sans-serif" font-size="39" font-weight="800" letter-spacing="1.1" fill="#174C38">FOODIFY</text>
+  <text x="125" y="88" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="6" fill="#6D786B">S I M P L E S</text>
+</svg>
