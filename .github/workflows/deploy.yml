@@ -1,7 +1,9 @@
 name: Deploy to Truehost
+
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -9,22 +11,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: 24
+          cache: npm
 
-      - run: bun install --frozen-lockfile
-      - run: bun run build
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Reinstall production-only dependencies
-        run: |
-          rm -rf node_modules
-          bun install --production --frozen-lockfile
+      - name: Build production application
+        run: npm run build
 
-      - name: Package build
+      - name: Install production-only dependencies
+        run: npm ci --omit=dev
+
+      - name: Package application
         run: zip -r deploy.zip .output node_modules package.json
 
-      - name: Upload zip via FTP
+      - name: Upload deployment package via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -36,16 +40,16 @@ jobs:
             **/*
             !deploy.zip
 
-      - name: Extract on server via cPanel API
+      - name: Extract application in cPanel
         run: |
-          curl -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
+          curl --fail-with-body -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
             "https://${{ secrets.CPANEL_HOST }}:2083/json-api/cpanel?cpanel_jsonapi_apiversion=2&cpanel_jsonapi_module=Fileman&cpanel_jsonapi_func=fileop&op=extract&sourcefiles=foodifysimples.com/deploy.zip&destfiles=/foodifysimples.com&doubledecode=1&overwrite=1"
 
-      - name: Restart app (Passenger restart signal)
+      - name: Restart Node.js application
         run: |
-          curl -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
+          curl --fail-with-body -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
             "https://${{ secrets.CPANEL_HOST }}:2083/execute/Fileman/mkdir?path=foodifysimples.com&name=tmp" || true
-          curl -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
+          curl --fail-with-body -sk -u "${{ secrets.CPANEL_USER }}:${{ secrets.CPANEL_PASSWORD }}" \
             --data-urlencode "dir=foodifysimples.com/tmp" \
             --data-urlencode "file=restart.txt" \
             --data-urlencode "content=" \
